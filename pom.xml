@@ -112,6 +112,7 @@
     <testRetryCount>2</testRetryCount>
 
 
+    <!-- Sonar Cloud dependencies -->
     <sonar.organization>lucacapotombolo</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
