@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - TestingISW2
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
