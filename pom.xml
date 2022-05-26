@@ -115,7 +115,7 @@
 
     <!-- sonar cloud -->
     <sonar.coverage.jacoco.xmlReportPaths>../test-jacoco-coverage/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    <sonar.organization>elisavenditti</sonar.organization>
+    <sonar.organization>lucacapotombolo</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
     <!-- dependencies -->
