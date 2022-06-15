@@ -80,26 +80,4 @@ public class TestBufferedChannelWriteSuccess {
         }
         Assert.assertNull(error);
     }
-
-
-    public void test() throws IOException {
-        File file = new File("C:\\Users\\lucac\\Downloads\\buffer\\log.txt");
-        boolean ret = file.createNewFile();
-        if(!ret)
-            System.out.println("Il file esiste...");
-        FileChannel fileChannel = new RandomAccessFile(file, "rw").getChannel();
-        BufferedChannel bufferedChannel = new BufferedChannel(UnpooledByteBufAllocator.DEFAULT, fileChannel, 65536, 512, 0);
-        int length = 100;
-        byte [] data = new byte[length];
-        ByteBuf bb = Unpooled.buffer(length);
-        Random random = new Random();
-        random.nextBytes(data);
-        bb.writeBytes(data);
-        bb.markReaderIndex();
-        bb.markWriterIndex();
-        System.out.println(Arrays.toString(bb.array().toString().getBytes(StandardCharsets.UTF_8)));
-        bufferedChannel.write(bb);
-        bufferedChannel.flush();
-        bufferedChannel.close();
-    }
 }
