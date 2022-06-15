@@ -29,13 +29,14 @@ public class TestBufferedChannelReadSuccess {
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 //capacity read/write buffer, ubb, number of bytes I write in the channel, number of bytes of read buffer, pos (read), length (read)
-                {2048, 0, 256, 512, 0, 256},
-                {256, 0, 256, 256, 0, 256},
-                {2048, 0, 256, 0, 0, 0}
-                //{2048, 0, 256, 512, 250, 3} strano
+                {2048, 0, 256, 512, 0, 256},        //OK
+                {1024, 0, 256, 256, 0, 256},         //OK
+                {2048, 0, 256, 0, 0, 0},            //OK
                 //next iteration
-                //{2048, 0, 2048, 256, 0, 256},
-                //{2048, 0, 4096, 256, 0, 256}
+                {2048, 0, 256, 256, 0, -1},         //OK
+                {2048, 0, 256, 256, 0, -5000},      //OK
+                {255, 0, 256, 256, 0, 256},         //OK
+                //{1024, 0, 512, 700, 500, 6}
         });
     }
 
@@ -51,7 +52,7 @@ public class TestBufferedChannelReadSuccess {
         createReadByteBuf(sizeReadBuf);
         this.pos = pos;
         this.length = length;
-        this.expected = length - pos;
+        this.expected = length;
     }
 
     private void writeChannel(int numberByteWritten) throws IOException {
@@ -84,6 +85,9 @@ public class TestBufferedChannelReadSuccess {
     @Test
     public void testReadAll() throws IOException {
         int n = this.bufferedChannel.read(readBuf, this.pos, this.length);
-        Assert.assertEquals(this.expected, n);
+        if(this.expected >= 0)
+            Assert.assertEquals(this.expected, n);
+        else
+            Assert.assertEquals(0, n);
     }
 }

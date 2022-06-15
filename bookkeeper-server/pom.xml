@@ -390,6 +390,7 @@
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelWriteSuccess</param>
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelReadSuccess</param>
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelWriteFailure</param>
+                <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestFlushSize</param>
               </targetTests>
               <avoidCallsTo>
                 <avoidCallsTo>org.slf4j</avoidCallsTo>

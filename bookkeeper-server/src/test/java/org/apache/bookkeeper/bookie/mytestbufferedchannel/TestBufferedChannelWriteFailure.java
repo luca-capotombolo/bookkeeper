@@ -24,8 +24,8 @@ public class TestBufferedChannelWriteFailure {
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 //capacity read/write buffer, ubb
-                {2048, 0},
-                {1024, 1}
+                {2048, 0},          //OK
+                {1024, 1}           //OK
         });
     }
 

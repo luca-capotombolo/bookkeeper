@@ -8,52 +8,53 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
 
 @RunWith(Parameterized.class)
-public class TestBufferedChannelWriteSuccess {
+public class TestFlushSize {
 
     private BufferedChannel bufferedChannel;
     private FileChannel fileChannel;
-    private ByteBuf byteBuf;
+    private File log;
+    private int numberByteWritten;
+
+    public TestFlushSize(int capacity, int ubb, int sizeWriteBuf) throws IOException {
+        configure(capacity, ubb, sizeWriteBuf);
+    }
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 //capacity read/write buffer, ubb, size write buffer
-                {10000, 0, 8192},           //OK
                 {2048, 0, 512},             //OK
-                {512, 0, 0},                //OK
-                {256, 1, 128}               //OK
+                {8192, 0, 2048},            //OK
+                {4096, 0, 256},             //OK
+                {2, 0, 1}                   //OK
         });
     }
 
-    public TestBufferedChannelWriteSuccess(int capacity, int ubb, int sizeWriteBuf) throws IOException {
-        configure(capacity, ubb, sizeWriteBuf);
-    }
-
     private void configure(int capacity, int ubb, int sizeWriteBuf) throws IOException {
-        File log = createTempFile();
-        createFileChannel(log);
+        this.log = createTempFile();
+        this.numberByteWritten = sizeWriteBuf;
+        createFileChannel(this.log);
         createBufferedChannel(capacity, ubb);
         createByteBuf(sizeWriteBuf);
     }
 
     private void createByteBuf(int sizeWriteBuf) throws IOException {
-        this.byteBuf = Unpooled.buffer(sizeWriteBuf, sizeWriteBuf);
+        ByteBuf byteBuf = Unpooled.buffer(sizeWriteBuf, sizeWriteBuf);
         byte [] data = new byte[sizeWriteBuf];
         Random random = new Random();
         random.nextBytes(data);
         byteBuf.writeBytes(data);
+        this.bufferedChannel.write(byteBuf);
     }
 
     private File createTempFile() throws IOException {
@@ -71,35 +72,42 @@ public class TestBufferedChannelWriteSuccess {
     }
 
     @Test
-    public void testWriteWithSuccess() {
+    public void testFlush(){
+
         Exception error = null;
+
+        Assert.assertEquals(this.numberByteWritten, this.bufferedChannel.getNumOfBytesInWriteBuffer());
+
         try {
-            this.bufferedChannel.write(this.byteBuf);
-        }catch (Exception e){
-            error = e;
+            this.bufferedChannel.flush();
+        }catch (Exception e1){
+            error = e1;
         }
+
         Assert.assertNull(error);
-    }
+
+        Assert.assertEquals(0, this.bufferedChannel.getNumOfBytesInWriteBuffer());
+
+        Assert.assertEquals(this.numberByteWritten, this.log.length());
+
+        Assert.assertEquals(this.numberByteWritten, this.bufferedChannel.position());
 
 
-    public void test() throws IOException {
-        File file = new File("C:\\Users\\lucac\\Downloads\\buffer\\log.txt");
-        boolean ret = file.createNewFile();
-        if(!ret)
-            System.out.println("Il file esiste...");
-        FileChannel fileChannel = new RandomAccessFile(file, "rw").getChannel();
-        BufferedChannel bufferedChannel = new BufferedChannel(UnpooledByteBufAllocator.DEFAULT, fileChannel, 65536, 512, 0);
-        int length = 100;
-        byte [] data = new byte[length];
-        ByteBuf bb = Unpooled.buffer(length);
-        Random random = new Random();
-        random.nextBytes(data);
-        bb.writeBytes(data);
-        bb.markReaderIndex();
-        bb.markWriterIndex();
-        System.out.println(Arrays.toString(bb.array().toString().getBytes(StandardCharsets.UTF_8)));
-        bufferedChannel.write(bb);
-        bufferedChannel.flush();
-        bufferedChannel.close();
+        try {
+            this.bufferedChannel.close();
+        }catch (Exception e2){
+            error = e2;
+        }
+
+        Assert.assertNull(error);
+
+        try {
+            this.bufferedChannel.close();
+        }catch (Exception e2){
+            error = e2;
+        }
+
+        Assert.assertNull(error);
+
     }
 }

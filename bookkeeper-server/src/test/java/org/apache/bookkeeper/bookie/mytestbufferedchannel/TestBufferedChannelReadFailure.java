@@ -27,13 +27,13 @@ public class TestBufferedChannelReadFailure {
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 //capacity read/write buffer, ubb, number of bytes I write in the channel, number of bytes of read buffer, pos (read), length (read)
-                {2048, 0, 256, 256, 0, 257},
-                {2048, 0, 256, 64, 0, 256},
-                {2048, 0, 256, 0, 0, 256},
-                {2048, 0, 256, 1024, 0, 1024}
+                {2048, 0, 256, 256, 0, 257},    //OK
+                {2048, 0, 256, 64, 0, 256},     //OK
+                {2048, 0, 256, 0, 0, 256},      //OK
+                {2048, 0, 256, 1024, 0, 1024},  //OK
                 //next iteration
-                //{2048, 0, 2048, 256, 0, 256},
-                //{2048, 0, 4096, 256, 0, 256}
+                {2048, 0, 256, 256, -567896, 128},   //OK
+                {2048, 0, 256, 256, -1, 128} ,       //OK
         });
     }
 
