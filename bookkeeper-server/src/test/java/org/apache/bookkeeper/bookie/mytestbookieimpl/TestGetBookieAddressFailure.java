@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class TestGetBookieAddressFailure {
 
     private ServerConfiguration serverConfiguration;
@@ -28,7 +28,7 @@ public class TestGetBookieAddressFailure {
         this.serverConfiguration.setAllowLoopback(loopBack);
     }
 
-    @Parameterized.Parameters
+    //@Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 {"", -1, "eth0", false, false, false},
@@ -40,7 +40,7 @@ public class TestGetBookieAddressFailure {
         });
     }
 
-    @Test
+    //@Test
     public void testFailure(){
         Exception error = null;
 

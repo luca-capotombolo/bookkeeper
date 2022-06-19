@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
-@RunWith(Parameterized.class)
+//@RunWith(Parameterized.class)
 public class TestGetBookieAddressAdvertised {
 
     private ServerConfiguration serverConfiguration;
@@ -31,7 +31,7 @@ public class TestGetBookieAddressAdvertised {
         this.serverConfiguration.setAllowLoopback(loopBack);
     }
 
-    @Parameterized.Parameters
+    //@Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
                 {"192.168.1.40", 1025, "eth0", false, false, false},
@@ -41,7 +41,7 @@ public class TestGetBookieAddressAdvertised {
         });
     }
 
-    @Test
+    //@Test
     public void testSuccess(){
         Exception error = null;
 
@@ -55,7 +55,7 @@ public class TestGetBookieAddressAdvertised {
     }
 
 
-    @Test
+    //@Test
     public void testCheckBookieSocketAddress() throws UnknownHostException {
         BookieSocketAddress bookieSocketAddress;
         BookieSocketAddress expected;
