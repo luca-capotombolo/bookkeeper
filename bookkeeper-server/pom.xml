@@ -174,12 +174,18 @@
       <scope>test</scope>
     </dependency>
     <!-- provo a toglierla per vedere se mi funziona badua -->
-    <!--
+<!--
     <dependency>
        <groupId>org.junit.jupiter</groupId>
        <artifactId>junit-jupiter-api</artifactId>
        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
     </dependency>-->
+
     <dependency>
        <!-- needed by ZooKeeper server -->
        <groupId>org.xerial.snappy</groupId>
@@ -249,11 +255,12 @@
         <artifactId>spotbugs-maven-plugin</artifactId>
       </plugin>
       <!-- lo provo a togliere per vedere se mi fa funzionare badua -->
-      <!--
+<!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
+
         <configuration>
           <trimStackTrace>false</trimStackTrace>
           <properties>
@@ -384,6 +391,7 @@
             <configuration>
               <targetClasses>
                 <param>org.apache.bookkeeper.bookie.BufferedChannel</param>
+                <param>org.apache.bookkeeper.bookie.BookieImpl</param>
               </targetClasses>
               <targetTests>
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelReadFailure</param>
@@ -391,6 +399,10 @@
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelReadSuccess</param>
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelWriteFailure</param>
                 <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestFlushSize</param>
+                <param>org.apache.bookkeeper.bookie.mytestbufferedchannel.TestBufferedChannelReadWhiteBox</param>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressFailure</param>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressSuccess</param>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressAdvertised</param>
               </targetTests>
               <avoidCallsTo>
                 <avoidCallsTo>org.slf4j</avoidCallsTo>
@@ -464,5 +476,97 @@
         </plugins>
       </build>
     </profile>
+
+
+    <profile>
+      <id>mutationPITInc</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <pitest.version>1.8.0</pitest.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.version}</version>
+            <configuration>
+              <targetClasses>
+                <param>org.apache.bookkeeper.bookie.BookieImpl</param>
+              </targetClasses>
+              <targetTests>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressFailure</param>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressSuccess</param>
+                <param>org.apache.bookkeeper.bookie.mytestbookieimpl.TestGetBookieAddressAdvertised</param>
+              </targetTests>
+              <avoidCallsTo>
+                <avoidCallsTo>org.slf4j</avoidCallsTo>
+              </avoidCallsTo>
+              <timeoutConstant>6000</timeoutConstant>
+              <excludedMethods>
+                <excludedMethod>writeComplete</excludedMethod>
+                <excludedMethod>checkDirectoryStructure</excludedMethod>
+                <excludedMethod>checkEnvironment</excludedMethod>
+                <excludedMethod>checkIfDirsOnSameDiskPartition</excludedMethod>
+                <excludedMethod>getBookieId</excludedMethod>
+                <excludedMethod>getLedgerDirsManager</excludedMethod>
+                <excludedMethod>getTotalDiskSpace</excludedMethod>
+                <excludedMethod>getTotalFreeSpace</excludedMethod>
+                <excludedMethod>getCurrentDirectory</excludedMethod>
+                <excludedMethod>mountLedgerStorageOffline</excludedMethod>
+                <excludedMethod>initializeStateManager</excludedMethod>
+                <excludedMethod>readJournal</excludedMethod>
+                <excludedMethod>process</excludedMethod>
+                <excludedMethod>replay</excludedMethod>
+                <excludedMethod>start</excludedMethod>
+                <excludedMethod>getLedgerDirsListener</excludedMethod>
+                <excludedMethod>isReadOnly</excludedMethod>
+                <excludedMethod>isAvailableForHighPriorityWrites</excludedMethod>
+                <excludedMethod>isRunning</excludedMethod>
+                <excludedMethod>run</excludedMethod>
+                <excludedMethod>triggerBookieShutdown</excludedMethod>
+                <excludedMethod>shutdown</excludedMethod>
+                <excludedMethod>shutdown</excludedMethod>
+                <excludedMethod>getLedgerForEntry</excludedMethod>
+                <excludedMethod>getJournal</excludedMethod>
+                <excludedMethod>addEntryInternal</excludedMethod>
+                <excludedMethod>recoveryAddEntry</excludedMethod>
+                <excludedMethod>createExplicitLACEntry</excludedMethod>
+                <excludedMethod>setExplicitLac</excludedMethod>
+                <excludedMethod>getExplicitLac</excludedMethod>
+                <excludedMethod>forceLedger</excludedMethod>
+                <excludedMethod>addEntry</excludedMethod>
+                <excludedMethod>fenceLedger</excludedMethod>
+                <excludedMethod>readEntry</excludedMethod>
+                <excludedMethod>readLastAddConfirmed</excludedMethod>
+                <excludedMethod>waitForLastAddConfirmedUpdate</excludedMethod>
+                <excludedMethod>cancelWaitForLastAddConfirmedUpdate</excludedMethod>
+                <excludedMethod>getLedgerStorage</excludedMethod>
+                <excludedMethod>getStateManager</excludedMethod>
+                <excludedMethod>getAllocator</excludedMethod>
+                <excludedMethod>format</excludedMethod>
+                <excludedMethod>cleanDir</excludedMethod>
+                <excludedMethod>getExitCode</excludedMethod>
+                <excludedMethod>getListOfEntriesOfLedger</excludedMethod>
+              </excludedMethods>
+              <historyInputFile>${project.build.directory}/pitest.history</historyInputFile>
+              <historyOutputFile>${project.build.directory}/pitest.history</historyOutputFile>
+            </configuration>
+            <executions>
+              <execution>
+                <id>PIT</id>
+                <phase>test-compile</phase>
+                <goals>
+                  <goal>mutationCoverage</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 </project>

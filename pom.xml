@@ -526,8 +526,9 @@
         </exclusions>
       </dependency>
 
+
+
       <dependency>
-         <!-- needed by ZooKeeper server tests utilities -->
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${junit5.version}</version>
@@ -910,7 +911,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
-        <!--<configuration>
+        <!--
+        <configuration>
           <argLine>-Xmx2G -Djava.net.preferIPv4Stack=true -Dio.netty.leakDetection.level=paranoid</argLine>
           <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
           <forkCount>${forkCount.variable}</forkCount>
@@ -1058,8 +1060,9 @@
     </plugins>
   </build>
   <profiles>
+
     <profile>
-      <!-- profile used by jenkins CI -->
+
       <id>code-coverage</id>
       <build>
         <plugins>
@@ -1073,13 +1076,12 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${maven-surefire-plugin.version}</version>
             <configuration>
-              <!-- @{argLine} is a variable injected by JaCoCo-->
+
               <argLine>@{argLine} -Xmx2G -Djava.net.preferIPv4Stack=true</argLine>
               <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
               <forkCount>${forkCount.variable}</forkCount>
               <reuseForks>false</reuseForks>
               <forkedProcessTimeoutInSeconds>1800</forkedProcessTimeoutInSeconds>
-              <!-- we want build to complete even in case of failures -->
               <testFailureIgnore>true</testFailureIgnore>
             </configuration>
           </plugin>
@@ -1098,6 +1100,7 @@
         </plugins>
       </build>
     </profile>
+
     <profile>
       <id>owasp-dependency-check</id>
       <build>
@@ -1152,6 +1155,7 @@
       </reporting>
     </profile>
     <!-- the profiles below are only for development purpose -->
+
     <profile>
       <id>dev</id>
       <build>
@@ -1203,7 +1207,7 @@
               <execution>
                 <id>source-release-assembly</id>
                 <configuration>
-                  <!-- we have a dedicated distribution module in bookkeeper-dist -->
+
                   <skipAssembly>true</skipAssembly>
                 </configuration>
               </execution>
