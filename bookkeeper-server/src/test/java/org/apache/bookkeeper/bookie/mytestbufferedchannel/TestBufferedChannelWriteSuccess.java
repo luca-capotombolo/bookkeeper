@@ -14,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
@@ -25,15 +24,19 @@ public class TestBufferedChannelWriteSuccess {
     private BufferedChannel bufferedChannel;
     private FileChannel fileChannel;
     private ByteBuf byteBuf;
+    private int sizeWriteBuf;
 
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
-                //capacity read/write buffer, ubb, size write buffer
+                //capacity read/write buffer, ubb, numberByteToWrite
                 {10000, 0, 8192},           //OK
                 {2048, 0, 512},             //OK
+                //empty buffer
                 {512, 0, 0},                //OK
-                {256, 1, 128}               //OK
+                //next iteration
+                {256, 1, 128},               //OK
+                {256, 0, 512}
         });
     }
 
@@ -54,6 +57,7 @@ public class TestBufferedChannelWriteSuccess {
         Random random = new Random();
         random.nextBytes(data);
         byteBuf.writeBytes(data);
+        this.sizeWriteBuf = sizeWriteBuf;
     }
 
     private File createTempFile() throws IOException {
@@ -71,13 +75,17 @@ public class TestBufferedChannelWriteSuccess {
     }
 
     @Test
-    public void testWriteWithSuccess() {
+    public void testWriteWithSuccess() throws IOException {
         Exception error = null;
+        ByteBuf buffer = Unpooled.buffer(this.sizeWriteBuf, this.sizeWriteBuf);
         try {
             this.bufferedChannel.write(this.byteBuf);
         }catch (Exception e){
             error = e;
         }
         Assert.assertNull(error);
+
+        int n = this.bufferedChannel.read(buffer, 0);
+        Assert.assertEquals(this.sizeWriteBuf, n);
     }
 }

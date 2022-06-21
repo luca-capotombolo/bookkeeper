@@ -32,7 +32,7 @@ public class TestFlushSize {
     @Parameterized.Parameters
     public static Collection<Object[]> getParameters() {
         return Arrays.asList(new Object[][] {
-                //capacity read/write buffer, ubb, size write buffer
+                //capacity read/write buffer, ubb, number byte to write
                 {2048, 0, 512},             //OK
                 {8192, 0, 2048},            //OK
                 {4096, 0, 256},             //OK
